@@ -6,7 +6,9 @@ This tool will help you record attendance in MIDS.
 
 `bash`, `getopt`, `curl`, `grep`, `python3`
 
-You probably already have them.
+You probably have this already, but if not:
+
+    $ sudo apt install curl util-linux python3 emacs-
 
 ## Installation
 
