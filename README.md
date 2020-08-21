@@ -17,7 +17,7 @@ You probably already have them.
 ## Usage
 
     $ emacs -h
-    Usage: ./emacs [OPTIONS]
+    Usage: emacs [OPTIONS]
 
     This program records attendance as complete for any classes
     in the current month up to today.
@@ -26,6 +26,6 @@ You probably already have them.
     (The password can have most symbols, but not newlines.)
 
     Options:
-    -u name  Use name for USNA login (default $USER)
-    -b file  Skip login and instead use cookie stored in this file
-    -c file  Save the login cookie to this file
+      -u name  Use name for USNA login (default $USER)
+      -b file  Skip login and instead use cookie stored in this file
+      -c file  Save the login cookie to this file
