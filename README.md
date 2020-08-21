@@ -4,7 +4,7 @@ This tool will help you record attendance in MIDS.
 
 ## Prerequisites
 
-`bash`, `getopt`, `curl`, `grep`
+`bash`, `getopt`, `curl`, `grep`, `python3`
 
 You probably already have them.
 
