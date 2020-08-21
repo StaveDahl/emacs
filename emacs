@@ -78,7 +78,7 @@ missing="$tdir/missing.txt"
 
 if $login; then
   if [[ -t 0 && -t 2 ]]; then
-    read -s -p "Enter your USNA MIDS password: " pw
+    read -s -p "Enter the USNA MIDS password for $username: " pw
     echo >&2
   else
     read -s pw
