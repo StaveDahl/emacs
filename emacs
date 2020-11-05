@@ -67,8 +67,15 @@ while true; do
   shift
 done
 
+if curl --fail --max-time 2 --silent 'https://mids.usna.edu' >/dev/null; then
+  echo "Intranet detected; will connect to mids.usna.edu"
+  calurl='https://mids.usna.edu/ITSD/mids/dacwu006$.startup'
+else
+  echo "mids.usna.edu not found; will try midsweb.usna.edu"
+  calurl='https://midsweb.usna.edu/ITSD/midsw/dacwu006$.startup'
+fi
+
 cookie1="$tdir/cookie1.txt"
-calurl='https://midsweb.usna.edu/ITSD/midsw/dacwu006$.startup'
 logpage="$tdir/logpage.html"
 calpage="$tdir/calpage.html"
 attpage="$tdir/attpage.html"
