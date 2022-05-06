@@ -29,5 +29,6 @@ You probably have this already, but if not:
 
     Options:
       -u name  Use name for USNA login (default $USER)
+      -m mon   Use month like APR instead of the current month
       -b file  Skip login and instead use cookie stored in this file
       -c file  Save the login cookie to this file
