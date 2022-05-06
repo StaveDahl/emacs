@@ -16,6 +16,7 @@ function usage {
   echo
   echo "Options:"
   echo "  -u name  Use name for USNA login (default \$USER)"
+  echo "  -m mon   Use month like APR instead of the current month"
   echo "  -b file  Skip login and instead use cookie stored in this file"
   echo "  -c file  Save the login cookie to this file"
   [[ $# -eq 1 ]] && exit $1
@@ -26,7 +27,7 @@ function err {
   [[ $# -ge 2 ]] && exit $2 || exit 1
 }
 
-args=$(getopt --options 'u:b:c:h' --name "$0" -- "$@") || usage 1
+args=$(getopt --options 'u:m:b:c:h' --name "$0" -- "$@") || usage 1
 eval set -- "$args"
 
 tdir=$(mktemp -d --tmpdir attendanceXXXXXXXX)
@@ -42,6 +43,8 @@ trap cleanup EXIT
 username=$USER
 login=true
 
+hasmonth=0
+
 while true; do
   case "$1" in
     -u)
@@ -52,6 +55,11 @@ while true; do
       cookie2=$2
       shift
       login=false
+      ;;
+    -m)
+      hasmonth=1
+      month=$2
+      shift
       ;;
     -c)
       cookie2=$2
@@ -82,6 +90,23 @@ attpage="$tdir/attpage.html"
 recpage="$tdir/recpage.html"
 missing="$tdir/missing.txt"
 
+if (( hasmonth )); then
+  modata=$(python3 - "$username" "$month" <<'EOF'
+import sys
+from urllib.parse import urlencode
+user, month = sys.argv[1:]
+assert len(month) == 3
+data = {
+    'P_LOGIN_IN': user.upper(),
+    'P_MONTH_IN': month.upper(),
+    'P_BUTTON_IN': 'Change Month',
+}
+print(urlencode(data))
+EOF
+)
+else
+  modata=''
+fi
 
 if $login; then
   if [[ -t 0 && -t 2 ]]; then
@@ -162,9 +187,9 @@ EOF
   suburl=${proc1%%|*}
   subdata=${proc1#*|}
 
-  echo -n "$pw" | curl -sL -b "$cookie1" -c "$cookie2" -o "$calpage" -d "$subdata" --data-urlencode password@- "$suburl" || true
+  echo -n "$pw" | curl -sL -b "$cookie1" -c "$cookie2" -o "$calpage" -d "$subdata" -d "$modata" --data-urlencode password@- "$suburl" || true
 else
-  curl -sL -b "$cookie2" -o "$calpage" "$calurl" || true
+  curl -sL -b "$cookie2" -o "$calpage" -d "$modata" "$calurl" || true
 fi
 
 if ! grep -q 'Ac Yr Ending' "$calpage"; then
