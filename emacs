@@ -19,6 +19,7 @@ function usage {
   echo "  -m mon   Use month like APR instead of the current month"
   echo "  -b file  Skip login and instead use cookie stored in this file"
   echo "  -c file  Save the login cookie to this file"
+  echo "  -h       Show this help page and exit"
   [[ $# -eq 1 ]] && exit $1
 }
 
@@ -27,10 +28,10 @@ function err {
   [[ $# -ge 2 ]] && exit $2 || exit 1
 }
 
-args=$(getopt --options 'u:m:b:c:h' --name "$0" -- "$@") || usage 1
+args=$(getopt 'u:m:b:c:h' "$@") || usage 1
 eval set -- "$args"
 
-tdir=$(mktemp -d --tmpdir attendanceXXXXXXXX)
+tdir=$(mktemp -d "${TMPDIR:-/tmp}/attendance.XXXXXXXX")
 cookie1="$tdir/cookie1.txt"
 cookie2="$tdir/cookie2.txt"
 
@@ -74,6 +75,11 @@ while true; do
   esac
   shift
 done
+
+if [[ $# -gt 0 ]]; then
+  echo "ERROR: unrecognized argument '$1'"
+  usage 1
+fi
 
 if curl --fail --max-time 2 --silent 'https://mids.usna.edu' >/dev/null; then
   echo "Intranet detected; will connect to mids.usna.edu"
